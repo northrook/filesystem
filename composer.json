@@ -1,0 +1,27 @@
+{
+  "name": "northrook/filesystem",
+  "description": "A PHP library for handling file and path operations.",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Northrook\\": ""
+    }
+  },
+  "authors": [
+    {
+      "name": "Martin",
+      "email": "mn@northrook.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=8.2",
+    "northrook/core": "dev-main",
+    "symfony/filesystem": "@stable"
+  },
+  "require-dev": {
+    "northrook/dev-env": "dev-main"
+  }
+}
