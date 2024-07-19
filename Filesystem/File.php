@@ -7,13 +7,8 @@ use Northrook\Filesystem;
 use Northrook\Logger\Log;
 use Stringable;
 use Symfony\Component\Filesystem\Exception\IOException;
-use function count;
-use function floor;
-use function min;
-use function log;
-use function Northrook\Core\isUrl;
-use function Northrook\Core\normalizePath;
-use function round;
+use function count, floor, min, log, round;
+use function Northrook\{normalizePath, isUrl};
 
 /**
  * @template PathString as string
