@@ -6,7 +6,10 @@ namespace Northrook\Filesystem;
 
 use Northrook\Core\Trait\PropertyAccessor;
 use Northrook\Filesystem;
+use Northrook\Resource\Path;
+use Northrook\Resource\URL;
 use Stringable;
+use function Northrook\isUrl;
 
 /**
  * @template UrlString as string
@@ -28,6 +31,10 @@ abstract class Resource implements Stringable
 
     final public function __toString() : string {
         return $this->path;
+    }
+
+    public static function from( string $string ) : URL | Path {
+        return isUrl( $string ) ? new URL( $string ) : new Path( $string );
     }
 
     final protected function filesystem() : Filesystem {
