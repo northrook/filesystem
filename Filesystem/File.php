@@ -2,84 +2,22 @@
 
 namespace Northrook\Filesystem;
 
-use Northrook\Core\Trait\PropertyAccessor;
+use Northrook\Core\Trait\StaticClass;
 use Northrook\Filesystem;
 use Northrook\Logger\Log;
-use Stringable;
 use Symfony\Component\Filesystem\Exception\IOException;
-use function count, floor, min, log, round;
-use function Northrook\{normalizePath, isUrl};
+use function Northrook\{isUrl, numberByteSize};
 
 /**
  * @template PathString as string
  * @template UnixTimestamp as int
  * @template Bytes as int
- *
- * @property-read  string  $path
- * @property-read  string  $basename
- * @property-read  string  $filename
- * @property-read  string  $extension
- * @property-read  string  $mimeType
- * @property-read  string  $size
- * @property-read  ?string $read
- *
- * @property-read  bool    $isValid
- * @property-read  bool    $exists
- * @property-read  bool    $isDir
- * @property-read  bool    $isFile
- * @property-read  bool    $isUrl
- * @property-read  bool    $isWritable
- * @property-read  bool    $isReadable
- * @property-read  int     $lastModified
  */
-class File implements Stringable
+final class File
 {
-    use PropertyAccessor;
+    use StaticClass;
 
     private static Filesystem $filesystem;
-    private static array      $readCache = [];
-    private string            $path;
-
-    protected ?bool $valid = null;
-
-    /**
-     * @param string[]  $path
-     */
-    public function __construct(
-        string | array $path,
-    ) {
-        $this->path = normalizePath( $path );
-    }
-
-    public function __get( string $property ) : string | bool | int | null {
-        $result = match ( $property ) {
-            'isValid'      => $this->valid ??= $this::exists( $this->path ),
-            'path'         => $this->path,
-            'mimeType'     => $this->filesystem()->getMimeType( $this->path ),
-            'basename'     => pathinfo( $this->path, PATHINFO_BASENAME ),
-            'filename'     => pathinfo( $this->path, PATHINFO_FILENAME ),
-            'extension'    => pathinfo( $this->path, PATHINFO_EXTENSION ),
-            'exists'       => $this::exists( $this->path ),
-            'isDir'        => $this::isDir( $this->path ),
-            'isFile'       => $this::isFile( $this->path ),
-            'isUrl'        => $this::isFilePath( $this->path ),
-            'isWritable'   => $this::isWritable( $this->path ),
-            'isReadable'   => $this::isReadable( $this->path ),
-            'size'         => $this::size( $this->path ),
-            'read'         => $this::read( $this->path ),
-            'lastModified' => @filemtime( $this->path ) ?: null,
-        };
-
-        $this->valid = (bool) $result;
-
-        return $result;
-    }
-
-    public function __toString() : string {
-        return $this->path;
-    }
-
-    //<editor-fold desc="Checks">
 
     /**
      * Checks the existence of files or directories.
@@ -190,10 +128,6 @@ class File implements Stringable
 
         return true;
     }
-
-
-    //</editor-fold>
-    //<editor-fold desc="Static">
 
     /**
      * Sets access and modification time of file.
@@ -330,85 +264,26 @@ class File implements Stringable
         return false;
     }
 
-    //</editor-fold>
-    //<editor-fold desc="Actions">
-
-
-    /**
-     * Copies this {@see File} to given {@see $path}.
-     *
-     * - If the target file is automatically overwritten when this file is newer.
-     * - If the target is newer, $overwriteNewerFiles decides whether to overwrite.
-     * - {@see IOException}s will be caught and logged as an error, returning false
-     *
-     * @param string<PathString>  $path
-     * @param bool                $overwriteNewerFiles
-     *
-     * @return bool  True if the file was written to, false if it already existed or an error occurred
-     */
-    public function copyTo( string $path, bool $overwriteNewerFiles = false ) : bool {
-        return File::copy( $this->path, $path, $overwriteNewerFiles );
+    public static function getMimeType( string $path ) : ?string {
+        return File::filesystem()->getMimeType( $path );
     }
-
-
-    /**
-     * Rename this {@see File} to given {@see $newName}.
-     */
-    public function renameTo( string $newName, bool $overwrite = false ) : bool {
-        try {
-            return File::rename( $this->path, $newName, $overwrite );
-        }
-        catch ( IOException $exception ) {
-            Log::exception( $exception );
-        }
-        return false;
-    }
-
-    /**
-     * Remove this {@see File}.
-     */
-    public function delete() : bool {
-        return File::remove( $this->path );
-    }
-
-    //</editor-fold>
 
     /**
      * Get the file size of a given file.
      *
      * @param string<PathString>|int<Bytes>  $bytes  Provide a path to a file or a file size in bytes
      *
-     * @return string
+     * @return null|string
      */
-    public static function size( string | int $bytes ) : string {
+    public static function size( string | int $bytes ) : ?string {
+        $bytes = is_string( $bytes ) ? File::filesystem()->size( $bytes ) : $bytes;
 
-        if ( is_string( $bytes ) ) {
-            if ( !file_exists( $bytes ) ) {
-                Log::Error( '{path} does not exist.', [ 'path' => $bytes, ] );
-                return 'Unknown';
-            }
-            $bytes = filesize( $bytes );
+        if ( $bytes === null ) {
+            return null;
         }
-        $unitDecimalsByFactor = [
-            [ 'B', 0 ],
-            [ 'kB', 0 ],
-            [ 'MB', 2 ],
-            [ 'GB', 2 ],
-            [ 'TB', 3 ],
-            [ 'PB', 3 ],
-        ];
 
-        $factor = $bytes ? floor( log( (int) $bytes, 1024 ) ) : 0;
-        $factor = min( $factor, count( $unitDecimalsByFactor ) - 1 );
-
-        $value = round( $bytes / ( 1024 ** $factor ), $unitDecimalsByFactor[ $factor ][ 1 ] );
-        $units = $unitDecimalsByFactor[ $factor ][ 0 ];
-
-        return $value . $units;
+        return numberByteSize( $bytes );
     }
-
-    /// ----------------------------------------------------------
-
 
     final protected static function filesystem() : Filesystem {
         return File::$filesystem ??= new Filesystem();

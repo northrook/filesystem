@@ -3,6 +3,7 @@
 namespace Northrook;
 
 use Northrook\Logger\Log;
+use Symfony\Component\Filesystem\Exception\IOException;
 
 final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
 {
@@ -72,7 +73,26 @@ final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
         'eot'    => 'application/vnd.ms-fontobject',
     ];
 
+    /**
+     * @param string  $path
+     *
+     * @return null|int
+     */
+    public function size( string $path ) : ?int {
+        try {
+            return filesize( $path );
+        }
+        catch ( IOException $exception ) {
+            Log::exception( $exception, 'error', "Could not determine file size for provided path." );
+        }
+        return null;
+    }
 
+    /**
+     * @param string  $path
+     *
+     * @return null|string
+     */
     public function getMimeType( string $path ) : ?string {
         try {
             return $this::MIME_TYPES[ pathinfo( $path, PATHINFO_EXTENSION ) ];
