@@ -119,9 +119,7 @@ class Path extends Resource
     }
 
     final protected function getPathSize() : ?string {
-        $filesize = File::size( $this->path );
-
-        return $filesize === null ? null : numberByteSize( $filesize );
+        return File::size( $this->path );
     }
 
     final protected function getPathInfo( ?string $get = null ) : array | string | null {
