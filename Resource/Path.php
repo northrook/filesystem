@@ -19,7 +19,7 @@ use function Northrook\{normalizePath, numberByteSize};
  * @property-read  string  $mimeType
  * @property-read  ?string $basename
  * @property-read  ?string $filename
- * @property-read  ?string $extension
+ * @property-read  ?string $extension Retrieve the path extension. Will return 'dir' for directories.
  *
  * @property-read  bool    $isDir
  * @property-read  bool    $isFile
@@ -52,7 +52,8 @@ class Path extends Resource
 
             'basename'     => $this->getPathInfo( 'basename' ),
             'filename'     => $this->getPathInfo( 'filename' ),
-            'extension'    => $this->getPathInfo( 'extension' ),
+            'extension'    => $this->getPathInfo( 'extension' )
+                              ?? ( \is_dir( $this->path ) ? 'dir' : null ),
 
             'isDir'        => File::isDir( $this->path ),
             'isFile'       => File::isFile( $this->path ),
