@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 
 namespace Northrook\Filesystem;
 
-use Northrook\Core\Trait\PropertyAccessor;
+use Northrook\Trait\PropertyAccessor;
 use Northrook\Filesystem;
 use Northrook\Resource\Path;
 use Northrook\Resource\URL;
