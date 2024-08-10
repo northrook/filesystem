@@ -2,7 +2,7 @@
 
 namespace Northrook\Filesystem;
 
-use Northrook\Core\Trait\StaticClass;
+use Northrook\Trait\StaticClass;
 use Northrook\Filesystem;
 use Northrook\Logger\Log;
 use Symfony\Component\Filesystem\Exception\IOException;

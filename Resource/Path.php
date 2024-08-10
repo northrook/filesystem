@@ -64,6 +64,11 @@ class Path extends Resource
         };
     }
 
+    public function append( string $string ) : Path {
+        $this->path = normalizePath( [ $this->path, $string ] );
+        return $this;
+    }
+
     /**
      * Sets access and modification time of file.
      *
