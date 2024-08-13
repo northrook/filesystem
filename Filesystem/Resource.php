@@ -25,7 +25,6 @@ abstract class Resource implements Stringable
     private static array      $readCache = [];
 
     protected string $path;
-    protected mixed  $content;
     protected ?bool  $exists = null;
 
 

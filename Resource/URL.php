@@ -21,14 +21,16 @@ class URL extends Resource
 {
     private int $httpCode;
 
+    protected mixed $content;
+
     /**
-     * @param string<UrlString>  $path
+     * @param Path|string<UrlString>  $path
      */
     public function __construct(
-        protected string  $path,
+        string | Path     $path,
         protected ?string $enforceDomain = null,
     ) {
-        $this->path = normalizeUrl( $path );
+        $this->path = normalizeUrl( ( string ) $path );
     }
 
     public function __get( string $property ) {

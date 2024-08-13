@@ -80,7 +80,7 @@ final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
      */
     public function size( string $path ) : ?int {
         try {
-            return filesize( $path );
+            return \filesize( $path );
         }
         catch ( IOException $exception ) {
             Log::exception( $exception, 'error', "Could not determine file size for provided path." );
@@ -95,7 +95,7 @@ final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
      */
     public function getMimeType( string $path ) : ?string {
         try {
-            return $this::MIME_TYPES[ pathinfo( $path, PATHINFO_EXTENSION ) ];
+            return $this::MIME_TYPES[ \pathinfo( $path, PATHINFO_EXTENSION ) ];
         }
         catch ( \Throwable $exception ) {
             Log::exception( $exception, 'error', "Could not determine mime type for provided path." );

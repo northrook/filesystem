@@ -6,8 +6,7 @@ namespace Northrook\Resource;
 
 use Northrook\Filesystem\{File, Resource};
 use Symfony\Component\Filesystem\Exception\IOException;
-use function filesize, filemtime;
-use function Northrook\{normalizePath, numberByteSize};
+use function Northrook\normalizePath;
 
 /**
  * @template PathString as string
@@ -34,12 +33,12 @@ class Path extends Resource
     private array $pathInfo;
 
     /**
-     * @param string<PathString>  $path
+     * @param Path|string<PathString>  $path
      */
     public function __construct(
-        protected string $path,
+        string | Path $path,
     ) {
-        $this->path = normalizePath( $path );
+        $this->path = normalizePath( (string) $path );
     }
 
     public function __get( string $property ) {
@@ -48,7 +47,7 @@ class Path extends Resource
             'exists'       => $this->exists ??= File::exists( $this->path ),
             'mimeType'     => File::getMimeType( $this->path ),
             'size'         => $this->getPathSize(),
-            'lastModified' => @filemtime( $this->path ) ?: null,
+            'lastModified' => @\filemtime( $this->path ) ?: null,
 
             'basename'     => $this->getPathInfo( 'basename' ),
             'filename'     => $this->getPathInfo( 'filename' ),
@@ -60,12 +59,12 @@ class Path extends Resource
             'isWritable'   => File::isWritable( $this->path ),
             'isReadable'   => File::isReadable( $this->path ),
 
-            'read'         => $this->content ??= File::read( $this->path ),
+            'read'         => File::read( $this->path ),
         };
     }
 
-    public function append( string $string ) : Path {
-        $this->path = normalizePath( [ $this->path, $string ] );
+    public function append( ?string  ...$path ) : Path {
+        $this->path = normalizePath( [ $this->path, ... $path ] );
         return $this;
     }
 
@@ -91,7 +90,7 @@ class Path extends Resource
      * @return bool  True if the file was written to, false if it already existed or an error occurred
      */
     public function save( mixed $content ) : bool {
-        return File::save( $this->path, $this->content = $content );
+        return File::save( $this->path, $content );
     }
 
     /**
@@ -129,9 +128,7 @@ class Path extends Resource
     }
 
     final protected function getPathInfo( ?string $get = null ) : array | string | null {
-        $this->pathInfo ??= pathinfo( $this->path );
+        $this->pathInfo ??= \pathinfo( $this->path );
         return $get ? $this->pathInfo[ $get ] ?? null : $this->pathInfo;
     }
-
-
 }
