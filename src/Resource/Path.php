@@ -37,7 +37,7 @@ class Path extends Resource
     public function __construct(
         string|Path $path,
     ) {
-        $this->path = normalizePath( (string) $path );
+        $this->path = Normalize::path( (string) $path );
     }
 
     public function __get( string $property )
@@ -63,6 +63,11 @@ class Path extends Resource
         };
     }
 
+    /**
+     * @param null|string ...$path
+     *
+     * @return $this
+     */
     public function append( ?string ...$path ) : Path
     {
         $this->path = Normalize::path( [$this->path, ...$path] );
@@ -115,8 +120,11 @@ class Path extends Resource
 
     /**
      * Rename this {@see Path}.
+     *
      * @param string $string
      * @param bool   $overwrite
+     *
+     * @return bool
      */
     public function rename( string $string, bool $overwrite = false ) : bool
     {
@@ -131,11 +139,19 @@ class Path extends Resource
         return File::remove( $this->path );
     }
 
+    /**
+     * @return null|string
+     */
     final protected function getPathSize() : ?string
     {
         return File::size( $this->path );
     }
 
+    /**
+     * @param null|string $get
+     *
+     * @return null|array|string
+     */
     final protected function getPathInfo( ?string $get = null ) : array|string|null
     {
         $this->pathInfo ??= \pathinfo( $this->path );
