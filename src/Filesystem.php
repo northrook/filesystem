@@ -10,9 +10,9 @@ final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
     /**
      * Mimetypes for simple .extension lookup.
      *
-     * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
+     * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
      */
-    private const MIME_TYPES = [
+    private const array MIME_TYPES = [
 
         // Text and XML
         'txt'    => 'text/plain',
@@ -74,31 +74,33 @@ final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
     ];
 
     /**
-     * @param string  $path
+     * @param string $path
      *
      * @return null|int
      */
-    public function size( string $path ) : ?int {
+    public function size( string $path ) : ?int
+    {
         try {
             return \filesize( $path );
         }
         catch ( IOException $exception ) {
-            Log::exception( $exception, 'error', "Could not determine file size for provided path." );
+            Log::exception( $exception, 'error', 'Could not determine file size for provided path.' );
         }
         return null;
     }
 
     /**
-     * @param string  $path
+     * @param string $path
      *
      * @return null|string
      */
-    public function getMimeType( string $path ) : ?string {
+    public function getMimeType( string $path ) : ?string
+    {
         try {
-            return $this::MIME_TYPES[ \pathinfo( $path, PATHINFO_EXTENSION ) ];
+            return $this::MIME_TYPES[\pathinfo( $path, PATHINFO_EXTENSION )];
         }
         catch ( \Throwable $exception ) {
-            Log::exception( $exception, 'error', "Could not determine mime type for provided path." );
+            Log::exception( $exception, 'error', 'Could not determine mime type for provided path.' );
         }
         return null;
     }

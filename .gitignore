@@ -1,5 +1,5 @@
 # PHPStorm
-/.idea/
+/.idea
 
 # VSCodeish
 *.code-workspace
@@ -11,10 +11,5 @@
 # Build data
 .env
 *.lock
-/public/
-/var/
-/index.php
-
-# Node
-/node_modules/
-package-lock.json
+*.cache
+/*.php

@@ -5,7 +5,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Northrook\\": ""
+      "Northrook\\": "src/"
     }
   },
   "authors": [
@@ -17,12 +17,19 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.2",
+    "php": ">=8.3",
     "ext-curl": "*",
     "northrook/core": "dev-main",
-    "symfony/filesystem": "@stable"
+    "symfony/filesystem": "@stable",
+    "northrook/php-cs": "dev-main"
   },
   "require-dev": {
     "northrook/dev-env": "dev-main"
-  }
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/northrook/php-cs"
+    }
+  ]
 }
