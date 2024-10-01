@@ -8,8 +8,6 @@ use Northrook\Filesystem\{File, Resource};
 use Support\Normalize;
 
 /**
- * @template UrlString as string
- *
  * @property string  $path
  * @property bool    $exists
  * @property ?string $fetch
@@ -21,14 +19,14 @@ class URL extends Resource
     protected mixed $content;
 
     /**
-     * @param Path|string<UrlString> $path
-     * @param ?string                $enforceDomain
+     * @param Path|string $url
+     * @param ?string     $enforceDomain
      */
     public function __construct(
-        string|Path $path,
+        string|Path       $url,
         protected ?string $enforceDomain = null,
     ) {
-        $this->path = Normalize::url( (string) $path );
+        $this->path = Normalize::url( (string) $url );
     }
 
     public function __get( string $property )
@@ -67,7 +65,7 @@ class URL extends Resource
     {
         $httpCode = $this->getHttpCode();
 
-        return  $httpCode >= 200 && $httpCode < 400 ;
+        return $httpCode >= 200 && $httpCode < 400 ;
 
     }
 
@@ -82,11 +80,11 @@ class URL extends Resource
             return $this->httpCode;
         }
 
-        $handle         = \curl_init( $this->path );
+        $handle = \curl_init( $this->path );
 
         \curl_setopt( $handle, CURLOPT_RETURNTRANSFER, true );
 
-        $this->httpCode = curl_exec( $handle )
+        $this->httpCode = \curl_exec( $handle )
             ? \curl_getinfo( $handle, CURLINFO_HTTP_CODE )
             : 204;
 

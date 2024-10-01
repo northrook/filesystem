@@ -8,14 +8,9 @@ use Northrook\Trait\PropertyAccessor;
 use Northrook\Filesystem;
 use Northrook\Resource\{Path, URL};
 use function Assert\isUrl;
+use Stringable;
 
-/**
- * @template UrlString as string
- * @template PathString as string
- * @template UnixTimestamp as int
- * @template Bytes as int
- */
-abstract class Resource implements \Stringable
+abstract class Resource implements Stringable
 {
     use PropertyAccessor;
 
@@ -25,7 +20,7 @@ abstract class Resource implements \Stringable
 
     protected string $path;
 
-    protected ?bool $exists         = null;
+    protected ?bool $exists = null;
 
     final public function __toString() : string
     {

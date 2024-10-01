@@ -9,11 +9,6 @@ use Support\Num;
 use Symfony\Component\Filesystem\Exception\IOException;
 use function Assert\isUrl;
 
-/**
- * @template PathString as string
- * @template UnixTimestamp as int
- * @template Bytes as int
- */
 final class File
 {
     use StaticClass;
@@ -23,7 +18,7 @@ final class File
     /**
      * Checks the existence of files or directories.
      *
-     * @param iterable|string<PathString> $path The files to check
+     * @param iterable|string $path The files to check
      *
      * @return bool
      */
@@ -41,7 +36,7 @@ final class File
     /**
      * Checks the provided paths are directories.
      *
-     * @param iterable|string<PathString> $path The paths to check
+     * @param iterable|string $path The paths to check
      *
      * @return bool
      */
@@ -49,7 +44,7 @@ final class File
     {
 
         foreach ( (array) $path as $file ) {
-            if ( ! is_dir( $file ) ) {
+            if ( ! \is_dir( $file ) ) {
                 return false;
             }
         }
@@ -60,7 +55,7 @@ final class File
     /**
      * Checks the provided paths are files.
      *
-     * @param iterable|string<PathString> $path The paths to check
+     * @param iterable|string $path The paths to check
      *
      * @return bool
      */
@@ -68,7 +63,7 @@ final class File
     {
 
         foreach ( (array) $path as $file ) {
-            if ( ! is_file( $file ) ) {
+            if ( ! \is_file( $file ) ) {
                 return false;
             }
         }
@@ -79,7 +74,7 @@ final class File
     /**
      * Checks the provided paths can be read.
      *
-     * @param iterable|string<PathString> $path The files to check
+     * @param iterable|string $path The files to check
      *
      * @return bool
      */
@@ -87,7 +82,7 @@ final class File
     {
 
         foreach ( (array) $path as $file ) {
-            if ( ! is_readable( $file ) ) {
+            if ( ! \is_readable( $file ) ) {
                 return false;
             }
         }
@@ -98,7 +93,7 @@ final class File
     /**
      * Checks if files or directories can be written to.
      *
-     * @param iterable|string<PathString> $path The files to check
+     * @param iterable|string $path The files to check
      *
      * @return bool
      */
@@ -106,7 +101,7 @@ final class File
     {
 
         foreach ( (array) $path as $file ) {
-            if ( ! is_writable( $file ) ) {
+            if ( ! \is_writable( $file ) ) {
                 return false;
             }
         }
@@ -119,7 +114,7 @@ final class File
      *
      *  - Does not validate the response.
      *
-     * @param iterable|string<PathString> $path The paths to check
+     * @param iterable|string $path The paths to check
      *
      * @return bool
      */
@@ -138,9 +133,9 @@ final class File
     /**
      * Sets access and modification time of file.
      *
-     * @param iterable|string<PathString> $files The files to touch
-     * @param ?int<UnixTimestamp>         $time  The touch time as a Unix timestamp, if not supplied the current system time is used
-     * @param ?int<UnixTimestamp>         $atime The access time as a Unix timestamp, if not supplied the current system time is used
+     * @param iterable|string $files The files to touch
+     * @param ?int            $time  The touch time as a Unix timestamp, if not supplied the current system time is used
+     * @param ?int            $atime The access time as a Unix timestamp, if not supplied the current system time is used
      *
      * @return bool
      */
@@ -161,7 +156,7 @@ final class File
      *
      * - {@see IOException} will be caught and logged as an error, returning `null`
      *
-     * @param string<PathString> $path The path to the file
+     * @param string $path The path to the file
      *
      * @return ?string Returns the contents of the file, or null if an {@see IOException} was thrown
      */
@@ -181,8 +176,8 @@ final class File
      *
      * - {@see IOException} will be caught and logged as an error, returning false
      *
-     * @param string<PathString> $path    The path to the file
-     * @param resource|string    $content The data to write into the file
+     * @param string          $path    The path to the file
+     * @param resource|string $content The data to write into the file
      *
      * @return bool True if the file was written to, false if it already existed or an error occurred
      */
@@ -206,9 +201,9 @@ final class File
      * - If the target is newer, $overwriteNewerFiles decides whether to overwrite.
      * - {@see IOException}s will be caught and logged as an error, returning false
      *
-     * @param string<PathString> $originFile
-     * @param string<PathString> $targetFile
-     * @param bool               $overwriteNewerFiles
+     * @param string $originFile
+     * @param string $targetFile
+     * @param bool   $overwriteNewerFiles
      *
      * @return bool True if the file was written to, false if it already existed or an error occurred
      */
@@ -257,8 +252,8 @@ final class File
      */
     public static function mkdir(
         string|iterable $dirs,
-        int $mode = 0777,
-        bool $returnPath = true,
+        int             $mode = 0777,
+        bool            $returnPath = true,
     ) : bool|string|array {
         try {
             File::filesystem()->mkdir( $dirs, $mode );
@@ -297,13 +292,13 @@ final class File
     /**
      * Get the file size of a given file.
      *
-     * @param int<Bytes>|string<PathString> $bytes Provide a path to a file or a file size in bytes
+     * @param int|string $bytes Provide a path to a file or a file size in bytes
      *
      * @return null|string
      */
     public static function size( string|int $bytes ) : ?string
     {
-        $bytes = is_string( $bytes ) ? File::filesystem()->size( $bytes ) : $bytes;
+        $bytes = \is_string( $bytes ) ? File::filesystem()->size( $bytes ) : $bytes;
 
         if ( null === $bytes ) {
             return null;

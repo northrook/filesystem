@@ -9,9 +9,6 @@ use Support\Normalize;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 /**
- * @template PathString as string
- * @template UnixTimestamp as int
- *
  * @property string  $path
  * @property bool    $exists
  * @property string  $mimeType
@@ -32,7 +29,7 @@ class Path extends Resource
     private array $pathInfo;
 
     /**
-     * @param Path|string<PathString> $path
+     * @param non-empty-string|Path $path
      */
     public function __construct(
         string|Path $path,
@@ -49,17 +46,17 @@ class Path extends Resource
             'size'         => $this->getPathSize(),
             'lastModified' => @\filemtime( $this->path ) ?: null,
 
-            'basename'     => $this->getPathInfo( 'basename' ),
-            'filename'     => $this->getPathInfo( 'filename' ),
-            'extension'    => $this->getPathInfo( 'extension' )
+            'basename'  => $this->getPathInfo( 'basename' ),
+            'filename'  => $this->getPathInfo( 'filename' ),
+            'extension' => $this->getPathInfo( 'extension' )
                               ?? ( \is_dir( $this->path ) ? 'dir' : null ),
 
-            'isDir'        => File::isDir( $this->path ),
-            'isFile'       => File::isFile( $this->path ),
-            'isWritable'   => File::isWritable( $this->path ),
-            'isReadable'   => File::isReadable( $this->path ),
+            'isDir'      => File::isDir( $this->path ),
+            'isFile'     => File::isFile( $this->path ),
+            'isWritable' => File::isWritable( $this->path ),
+            'isReadable' => File::isReadable( $this->path ),
 
-            'read'         => File::read( $this->path ),
+            'read' => File::read( $this->path ),
         };
     }
 
@@ -77,8 +74,8 @@ class Path extends Resource
     /**
      * Sets access and modification time of file.
      *
-     * @param ?int<UnixTimestamp> $time  The touch time as a Unix timestamp, if not supplied the current system time is used
-     * @param ?int<UnixTimestamp> $atime The access time as a Unix timestamp, if not supplied the current system time is used
+     * @param ?int $time  The touch time as a Unix timestamp, if not supplied the current system time is used
+     * @param ?int $atime The access time as a Unix timestamp, if not supplied the current system time is used
      *
      * @return bool
      */
@@ -102,14 +99,14 @@ class Path extends Resource
     }
 
     /**
-     * Copies this {@see File} to given {@see Path}.
+     * Copies this {@see File} to the provided {@see $path}.
      *
      * - If the target file is automatically overwritten when this file is newer.
      * - If the target is newer, $overwriteNewerFiles decides whether to overwrite.
      * - {@see IOException}s will be caught and logged as an error, returning false
      *
-     * @param string<PathString> $path
-     * @param bool               $overwriteNewerFiles
+     * @param string $path
+     * @param bool   $overwriteNewerFiles
      *
      * @return bool True if the file was written to, false if it already existed or an error occurred
      */

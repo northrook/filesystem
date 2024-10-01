@@ -20,16 +20,9 @@
     "php": ">=8.3",
     "ext-curl": "*",
     "northrook/core": "dev-main",
-    "symfony/filesystem": "@stable",
-    "northrook/php-cs": "dev-main"
+    "symfony/filesystem": "@stable"
   },
   "require-dev": {
     "northrook/dev-env": "dev-main"
-  },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/northrook/php-cs"
-    }
-  ]
+  }
 }
