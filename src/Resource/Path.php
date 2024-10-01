@@ -29,7 +29,7 @@ class Path extends Resource
     private array $pathInfo;
 
     /**
-     * @param non-empty-string|Path $path
+     * @param string|Path $path
      */
     public function __construct(
         string|Path $path,
