@@ -29,12 +29,11 @@ class Path extends Resource
     private array $pathInfo;
 
     /**
-     * @param string|Path $path
+     * @param Path|string[] $path
      */
-    public function __construct(
-        string|Path $path,
-    ) {
-        $this->path = Normalize::path( (string) $path );
+    public function __construct( Path|string|array $path )
+    {
+        $this->path = Normalize::path( $path instanceof Path ? $path->path : $path );
     }
 
     public function __get( string $property )
@@ -49,7 +48,7 @@ class Path extends Resource
             'basename'  => $this->getPathInfo( 'basename' ),
             'filename'  => $this->getPathInfo( 'filename' ),
             'extension' => $this->getPathInfo( 'extension' )
-                              ?? ( \is_dir( $this->path ) ? 'dir' : null ),
+                           ?? ( \is_dir( $this->path ) ? 'dir' : null ),
 
             'isDir'      => File::isDir( $this->path ),
             'isFile'     => File::isFile( $this->path ),
