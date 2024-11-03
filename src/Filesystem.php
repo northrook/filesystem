@@ -3,10 +3,10 @@
 namespace Northrook;
 
 use Northrook\Logger\Log;
-use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem as Symfony;
 use Throwable;
 
-final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
+final class Filesystem extends Symfony\Filesystem
 {
     /**
      * Mimetypes for simple .extension lookup.
@@ -82,9 +82,9 @@ final class Filesystem extends \Symfony\Component\Filesystem\Filesystem
     public function size( string $path ) : ?int
     {
         try {
-            return \filesize( $path );
+            return \filesize( $path ) ?: null;
         }
-        catch ( IOException $exception ) {
+        catch ( Symfony\Exception\IOException $exception ) {
             Log::exception( $exception, 'error', 'Could not determine file size for provided path.' );
         }
         return null;

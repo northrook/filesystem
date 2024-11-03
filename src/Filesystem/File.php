@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Northrook\Filesystem;
 
-use Northrook\Trait\StaticClass;
+use LogicException;
 use Northrook\Filesystem;
 use Northrook\Logger\Log;
 use Support\Num;
@@ -11,18 +13,26 @@ use function Assert\isUrl;
 
 final class File
 {
-    use StaticClass;
+    final protected function __construct()
+    {
+        throw new LogicException( $this::class.' is using the `StaticClass` trait, and should not be instantiated directly.' );
+    }
+
+    final protected function __clone()
+    {
+        throw new LogicException( $this::class.' is using the `StaticClass` trait, and should not be cloned.' );
+    }
 
     private static Filesystem $filesystem;
 
     /**
      * Checks the existence of files or directories.
      *
-     * @param iterable|string $path The files to check
+     * @param string ...$path The files to check
      *
      * @return bool
      */
-    public static function exists( string|iterable $path ) : bool
+    public static function exists( string ...$path ) : bool
     {
         try {
             return File::filesystem()->exists( $path );
@@ -36,14 +46,14 @@ final class File
     /**
      * Checks the provided paths are directories.
      *
-     * @param iterable|string $path The paths to check
+     * @param string ...$path The paths to check
      *
      * @return bool
      */
-    public static function isDir( string|iterable $path ) : bool
+    public static function isDir( string ...$path ) : bool
     {
 
-        foreach ( (array) $path as $file ) {
+        foreach ( $path as $file ) {
             if ( ! \is_dir( $file ) ) {
                 return false;
             }
@@ -55,14 +65,14 @@ final class File
     /**
      * Checks the provided paths are files.
      *
-     * @param iterable|string $path The paths to check
+     * @param string ...$path The paths to check
      *
      * @return bool
      */
-    public static function isFile( string|iterable $path ) : bool
+    public static function isFile( string ...$path ) : bool
     {
 
-        foreach ( (array) $path as $file ) {
+        foreach ( $path as $file ) {
             if ( ! \is_file( $file ) ) {
                 return false;
             }
@@ -74,14 +84,14 @@ final class File
     /**
      * Checks the provided paths can be read.
      *
-     * @param iterable|string $path The files to check
+     * @param string ...$path The files to check
      *
      * @return bool
      */
-    public static function isReadable( string|iterable $path ) : bool
+    public static function isReadable( string ...$path ) : bool
     {
 
-        foreach ( (array) $path as $file ) {
+        foreach ( $path as $file ) {
             if ( ! \is_readable( $file ) ) {
                 return false;
             }
@@ -93,14 +103,14 @@ final class File
     /**
      * Checks if files or directories can be written to.
      *
-     * @param iterable|string $path The files to check
+     * @param string ...$path The files to check
      *
      * @return bool
      */
-    public static function isWritable( string|iterable $path ) : bool
+    public static function isWritable( string ...$path ) : bool
     {
 
-        foreach ( (array) $path as $file ) {
+        foreach ( $path as $file ) {
             if ( ! \is_writable( $file ) ) {
                 return false;
             }
@@ -114,14 +124,14 @@ final class File
      *
      *  - Does not validate the response.
      *
-     * @param iterable|string $path The paths to check
+     * @param string ...$path The paths to check
      *
      * @return bool
      */
-    public static function isFilePath( string|iterable $path ) : bool
+    public static function isFilePath( string ...$path ) : bool
     {
 
-        foreach ( (array) $path as $file ) {
+        foreach ( $path as $file ) {
             if ( isUrl( $file ) ) {
                 return false;
             }
@@ -133,13 +143,13 @@ final class File
     /**
      * Sets access and modification time of file.
      *
-     * @param iterable|string $files The files to touch
+     * @param string|string[] $files The files to touch
      * @param ?int            $time  The touch time as a Unix timestamp, if not supplied the current system time is used
      * @param ?int            $atime The access time as a Unix timestamp, if not supplied the current system time is used
      *
      * @return bool
      */
-    public static function touch( string|iterable $files, ?int $time = null, ?int $atime = null ) : bool
+    public static function touch( string|array $files, ?int $time = null, ?int $atime = null ) : bool
     {
         try {
             File::filesystem()->touch( $files, $time, $atime );
@@ -244,16 +254,16 @@ final class File
     /**
      * Creates a directory recursively.
      *
-     * @param iterable|string $dirs
+     * @param string|string[] $dirs
      * @param int             $mode
      * @param bool            $returnPath
      *
-     * @return array|bool|string
+     * @return bool|string|string[]
      */
     public static function mkdir(
-        string|iterable $dirs,
-        int             $mode = 0777,
-        bool            $returnPath = true,
+        string|array $dirs,
+        int          $mode = 0777,
+        bool         $returnPath = true,
     ) : bool|string|array {
         try {
             File::filesystem()->mkdir( $dirs, $mode );
@@ -268,11 +278,11 @@ final class File
     /**
      * Removes files or directories.
      *
-     * @param iterable|string $files
+     * @param string|string[] $files
      *
      * @return bool
      */
-    public static function remove( string|iterable $files ) : bool
+    public static function remove( string|array $files ) : bool
     {
         try {
             File::filesystem()->remove( $files );

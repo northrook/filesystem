@@ -2,25 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Northrook\Resource;
+namespace Northrook\Filesystem;
 
-use Northrook\Filesystem\{File, Resource};
+use Override;
 use Support\Normalize;
 
-/**
- * @property string  $path
- * @property bool    $exists
- * @property ?string $fetch
- */
-class URL extends Resource
+final class URL extends Reference
 {
     private int $httpCode;
 
-    protected mixed $content;
-
     /**
-     * @param Path|string $url
-     * @param ?string     $enforceDomain
+     * @param non-empty-string|Path $url
+     * @param ?string               $enforceDomain
      */
     public function __construct(
         string|Path       $url,
@@ -29,15 +22,11 @@ class URL extends Resource
         $this->path = Normalize::url( (string) $url );
     }
 
-    public function __get( string $property )
-    {
-        return match ( $property ) {
-            'path'   => $this->path,
-            'exists' => $this->exists  ??= $this->exists(),
-            'fetch'  => $this->content ??= File::read( $this->path ),
-        };
-    }
-
+    /**
+     * @param non-empty-string  $path
+     *
+     * @return null|\Northrook\Filesystem\Path
+     */
     public function save( string $path ) : ?Path
     {
         if ( ! $this->fetch() ) {
@@ -46,27 +35,33 @@ class URL extends Resource
 
         $path = new Path( $path );
 
-        $path->save( $this->content );
+        $path->save( (string) $this->content );
 
         return $path;
     }
 
+    /**
+     * @param bool $retry
+     *
+     * @return null|resource|string
+     */
     public function fetch( bool $retry = false ) : mixed
     {
 
-        if ( isset( $this->content ) && ! $retry ) {
+        if ( $this->content && ! $retry ) {
             return $this->content;
         }
 
         return $this->content = File::read( $this->path );
     }
 
-    private function exists() : bool
+    #[Override]
+    public function exists() : bool
     {
-        $httpCode = $this->getHttpCode();
+        static $httpCode;
+        $httpCode ??= $this->getHttpCode();
 
-        return $httpCode >= 200 && $httpCode < 400 ;
-
+        return $this->exists = ( $httpCode >= 200 && $httpCode < 400 );
     }
 
     /**

@@ -19,10 +19,14 @@
   "require": {
     "php": ">=8.3",
     "ext-curl": "*",
-    "northrook/core": "dev-main",
+    "northrook/support": "dev-main",
+    "northrook/logger": "dev-main",
     "symfony/filesystem": "@stable"
   },
   "require-dev": {
     "northrook/dev-env": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "vendor/bin/phpstan analyse"
   }
 }
