@@ -29,7 +29,7 @@ final class Path extends Reference
     private array $pathInfo;
 
     /**
-     * @param non-empty-string|non-empty-string[]|Path $path
+     * @param Path|string|string[] $path
      */
     public function __construct( Path|string|array $path )
     {
