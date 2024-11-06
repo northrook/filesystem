@@ -10,6 +10,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use UnexpectedValueException;
 
 /**
+ * @property string  $string
  * @property string  $mimeType
  * @property ?string $basename
  * @property ?string $filename
@@ -19,7 +20,6 @@ use UnexpectedValueException;
  * @property bool    $isFile
  * @property bool    $isWritable
  * @property bool    $isReadable
- * @property ?string $read
  * @property ?string $size
  * @property int     $lastModified
  */
@@ -39,7 +39,7 @@ final class Path extends Reference
     public function __get( string $property ) : string|bool|int|null
     {
         return match ( $property ) {
-            'path'         => $this->path,
+            'string'       => $this->path,
             'exists'       => $this->exists(),
             'mimeType'     => $this::filesystem()->getMimeType( $this->path ),
             'size'         => $this->getPathSize(),

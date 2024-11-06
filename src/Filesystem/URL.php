@@ -12,20 +12,20 @@ final class URL extends Reference
     private int $httpCode;
 
     /**
-     * @param non-empty-string|Path $url
-     * @param ?string               $enforceDomain
+     * @param Path|string|URL $url
+     * @param ?string         $enforceDomain
      */
     public function __construct(
-        string|Path       $url,
+        string|URL|Path   $url,
         protected ?string $enforceDomain = null,
     ) {
-        $this->path = Normalize::url( (string) $url );
+        $this->path = Normalize::url( $url instanceof Path ? $url->path : (string) $url );
     }
 
     /**
-     * @param non-empty-string  $path
+     * @param non-empty-string $path
      *
-     * @return null|\Northrook\Filesystem\Path
+     * @return null|Path
      */
     public function save( string $path ) : ?Path
     {
