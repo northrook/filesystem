@@ -13,17 +13,17 @@ use function Assert\isUrl;
 
 final class File
 {
+    private static Filesystem $filesystem;
+
     final protected function __construct()
     {
-        throw new LogicException( $this::class.' is using the `StaticClass` trait, and should not be instantiated directly.' );
+        throw new LogicException( $this::class.' is using the `StaticClass` trait, and should not be instantiated directly.');
     }
 
     final protected function __clone()
     {
         throw new LogicException( $this::class.' is using the `StaticClass` trait, and should not be cloned.' );
     }
-
-    private static Filesystem $filesystem;
 
     /**
      * Checks the existence of files or directories.
@@ -35,7 +35,7 @@ final class File
     public static function exists( string ...$path ) : bool
     {
         try {
-            return File::filesystem()->exists( $path );
+            return File::filesystem()->exists( ...$path );
         }
         catch ( IOException $exception ) {
             Log::exception( $exception );
@@ -52,7 +52,6 @@ final class File
      */
     public static function isDir( string ...$path ) : bool
     {
-
         foreach ( $path as $file ) {
             if ( ! \is_dir( $file ) ) {
                 return false;
@@ -71,7 +70,6 @@ final class File
      */
     public static function isFile( string ...$path ) : bool
     {
-
         foreach ( $path as $file ) {
             if ( ! \is_file( $file ) ) {
                 return false;
@@ -90,7 +88,6 @@ final class File
      */
     public static function isReadable( string ...$path ) : bool
     {
-
         foreach ( $path as $file ) {
             if ( ! \is_readable( $file ) ) {
                 return false;
@@ -109,7 +106,6 @@ final class File
      */
     public static function isWritable( string ...$path ) : bool
     {
-
         foreach ( $path as $file ) {
             if ( ! \is_writable( $file ) ) {
                 return false;
@@ -130,7 +126,6 @@ final class File
      */
     public static function isFilePath( string ...$path ) : bool
     {
-
         foreach ( $path as $file ) {
             if ( isUrl( $file ) ) {
                 return false;

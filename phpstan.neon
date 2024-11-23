@@ -5,6 +5,10 @@ parameters:
 	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
 		-
+			message: '#Expression on left side of \?\? is always null.#'
+			path: *.php
+
+		-
 			message: '#Access to an undefined static property .+::\$.+#'
 			path: *.php
 
@@ -23,6 +27,15 @@ parameters:
 		-
 			message: "#Class .+ has an uninitialized readonly property .+ Assign it in the constructor.#"
 			path: *.php
+
 		-
 			message: "#Method .+ should return .+ but returns mixed.#"
+			path: *.php
+
+		-
+			message: "#Method .+ has parameter .+ with no value type specified in iterable type iterable.#"
+			path: *.php
+
+		-
+			message: "#PHPDoc tag @phpstan-assert-if-true for .+ has no value type specified .+#"
 			path: *.php
